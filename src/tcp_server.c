@@ -17,7 +17,7 @@
 #include "trafficSignal.h"
 
 // define traffic signal port and baudspeed info
-#define SERIAL_PORT "/dev/ttyUSB0"
+#define SERIAL_PORT "/dev/tty0"
 #define BAUD_SPEED 38400
 
 //int getEdgeType(){}
