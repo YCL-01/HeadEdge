@@ -96,7 +96,7 @@ int receiver(int shmId) {
     }
     printf("Server Activated\n");
     
-    runTrafficSignalThread(SERIAL_PORT, BAUD_SPEED);
+    //runTrafficSignalThread(SERIAL_PORT, BAUD_SPEED);
     
     pthread_t cliThread[NORM_EDGE];
     threadArgs_A args;

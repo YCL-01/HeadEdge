@@ -108,10 +108,14 @@ void gentleman(int shmId_A){ //, int shmId_B){
     counterArgs.orgSigIn = &orgSigIn;
     counterArgs.orgSigOut = &orgSigOut;
     while(1){
-        printf("counterSig car_0: %s\n", counterSig->car_0);
-        printf("counterSig car_1: %s\n", counterSig->car_1);
-        printf("counterSig ped_0: %s\n", counterSig->ped_0);
-        printf("counterSig ped_1: %s\n", counterSig->ped_1);
+        if(strlen(counterSig->car_0) > 0){
+            printf("counterSig car_0: %s\n", counterSig->car_0);
+            printf("counterSig car_1: %s\n", counterSig->car_1);
+            printf("counterSig ped_0: %s\n", counterSig->ped_0);
+            printf("counterSig ped_1: %s\n", counterSig->ped_1);
+        }else{
+            continue;
+        }
     }
     //pthread_create(&counterThread, NULL, counter, (void *)&counterArgs);
     //pthread_join(counterThread, NULL);
