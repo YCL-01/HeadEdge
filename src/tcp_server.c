@@ -1,4 +1,10 @@
 #include "tcp_server.h"
+#include "trafficSignal.h"
+
+// define traffic signal port and baudspeed info
+#define SERIAL_PORT "/dev/ttyUSB0"
+#define BAUD_SPEED 38400
+
 //int getEdgeType(){}
 
 void *workThread(void *Args){
@@ -37,6 +43,12 @@ void *workThread(void *Args){
             break;
         default:
             break;
+        }
+
+        // get Traffic signal
+        threadSig->trafficSignal = getTrafficSignal();
+        if(threadSig->trafficSignal != 0){
+            threadSig->remainingTime = getRemainingTime();
         }
     }
 }
@@ -81,6 +93,8 @@ int receiver(int shmId) {
         args.sock = &clientSock;
         args.shmId = shmId;
         args.edgeType = i; // getEdgeType(ip_data)
+
+        runTrafficSignalThread(SERIAL_PORT, BAUD_SPEED);
         pthread_create(&newThread[i], NULL, workThread, (void *)&args);
     }
     for(int i=0; i<NORM_EDGE; i++){

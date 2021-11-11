@@ -11,7 +11,8 @@
 
 //--------< Structure >--------//
 typedef struct signal_A{
-	//int trafficSignal = 0;
+	int trafficSignal = 0; // Traffic Signal 0 -> red, 1 -> green, 2-> green blink
+	int remainingTime = 0; // represent remaining signal time. works on green/green blink
 	char car_0[5]; // SIG + SPEED
 	char car_1[5]; 
 	char ped_0[5]; // SIG
