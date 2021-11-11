@@ -2,16 +2,16 @@
 
 // return -> 0, 1, 2
 int getTrafficSignal(){
-  trafficMutex.lock();
+  pthread_mutex_lock(&trafficMutex);
   int temp_trafficSignal = trafficSignal;
-  trafficMutex.unlock();
+  pthread_mutex_unlock(&trafficMutex);
   return temp_trafficSignal;
 }
 
 int getRemainingTime(){
-  trafficMutex.lock();
+  pthread_mutex_lock(&trafficMutex);
   int temp_remainingTime = remainingTime;
-  trafficMutex.unlock();
+  pthread_mutex_unlock(&trafficMutex);
   return temp_remainingTime;
 }
 
@@ -88,32 +88,32 @@ void* parseTrafficSignal(void * arg){
             // Red -> 0
             if(buffer[4] == 19 && buffer[5] == 0){
               if(getTrafficSignal() != 0){
-                trafficMutex.lock();
+                pthread_mutex_lock(&trafficMutex);
                 trafficSignal = 0;
-                trafficMutex.unlock();
+                pthread_mutex_unlock(&trafficMutex);
               }
             }
             // Green
             else if(buffer[4] == 3 && buffer[5] == 2){
               if(getTrafficSignal() != 1){
-                trafficMutex.lock();
+                pthread_mutex_lock(&trafficMutex);
                 trafficSignal = 1;
-                trafficMutex.unlock();
+                pthread_mutex_unlock(&trafficMutex);
               }
-              trafficMutex.lock();
+              pthread_mutex_lock(&trafficMutex);
               remainingTime = buffer[12];
-              trafficMutex.unlock();
+              pthread_mutex_unlock(&trafficMutex);
             }
             // Green Blink
             else if(buffer[4] == 11 && buffer[5] == 2){
               if(getTrafficSignal() != 2){
-                trafficMutex.lock();
+                pthread_mutex_lock(&trafficMutex);
                 trafficSignal = 2;
-                trafficMutex.unlock();
+                pthread_mutex_unlock(&trafficMutex);
               }
-              trafficMutex.lock();
+              pthread_mutex_lock(&trafficMutex);
               remainingTime = buffer[12];
-              trafficMutex.unlock();
+              pthread_mutex_unlock(&trafficMutex);
             }
           
         }

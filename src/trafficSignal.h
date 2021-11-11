@@ -9,10 +9,9 @@
 #include <string.h>
 #include <sys/types.h>
 #include <termios.h>
-#include <mutex>
 
 
-static std::mutex trafficMutex;
+static pthread_mutex_t trafficMutex;
 
 #define MAX_BUF_SIZE 512
 static int fd = 0;
