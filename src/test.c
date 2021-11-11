@@ -1,5 +1,15 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/ipc.h> 
+#include <sys/shm.h>
+#include <pthread.h>
+
 #include "tcp_server.h"
 #include "gentleman.h"
+#include "common.h"
 
 int process_A(int shmId) {
     receiver(shmId);

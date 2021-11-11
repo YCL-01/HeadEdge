@@ -1,14 +1,3 @@
-//--------< Headers >--------//
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <string.h>
-
-#include <sys/ipc.h> 
-#include <sys/shm.h>
-#include <pthread.h> 
-
 //--------< Structure >--------//
 typedef struct signal_A{
 	int trafficSignal; // Traffic Signal 0 -> red, 1 -> green, 2-> green blink

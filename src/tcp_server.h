@@ -1,17 +1,9 @@
-//--------< Headers >--------//
-#include "common.h"
-#include <netinet/ip.h>
-#include <ifaddrs.h>
-#include <arpa/inet.h> 
-#include <sys/socket.h>
-#include <netinet/in.h>
-
 //-----< Share memory >------//
 #define SHM_A_KEY		1111
 
 //----< Network Setting >----//
 #define SERV_PORT		2555
-#define SERV_IP			"192.168.0.10"
+#define SERV_IP			"192.168.0.5"
 
 //#define VMS_PORT		100
 //#define SPK_PORT		9531

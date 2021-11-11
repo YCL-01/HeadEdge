@@ -1,5 +1,5 @@
-obj/tcp_server.o: src/tcp_server.c /usr/include/stdc-predef.h \
- /usr/include/stdio.h \
+obj/trafficSignal.o: src/trafficSignal.c /usr/include/stdc-predef.h \
+ src/trafficSignal.h /usr/include/stdio.h \
  /usr/include/aarch64-linux-gnu/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -43,41 +43,22 @@ obj/tcp_server.o: src/tcp_server.c /usr/include/stdc-predef.h \
  /usr/include/aarch64-linux-gnu/bits/thread-shared-types.h \
  /usr/include/aarch64-linux-gnu/bits/pthreadtypes-arch.h \
  /usr/include/alloca.h /usr/include/aarch64-linux-gnu/bits/stdlib-float.h \
- /usr/include/fcntl.h /usr/include/aarch64-linux-gnu/bits/fcntl.h \
- /usr/include/aarch64-linux-gnu/bits/fcntl-linux.h \
- /usr/include/aarch64-linux-gnu/bits/stat.h /usr/include/unistd.h \
- /usr/include/aarch64-linux-gnu/bits/posix_opt.h \
+ /usr/include/unistd.h /usr/include/aarch64-linux-gnu/bits/posix_opt.h \
  /usr/include/aarch64-linux-gnu/bits/environments.h \
  /usr/include/aarch64-linux-gnu/bits/confname.h \
  /usr/include/aarch64-linux-gnu/bits/getopt_posix.h \
- /usr/include/aarch64-linux-gnu/bits/getopt_core.h /usr/include/string.h \
+ /usr/include/aarch64-linux-gnu/bits/getopt_core.h /usr/include/fcntl.h \
+ /usr/include/aarch64-linux-gnu/bits/fcntl.h \
+ /usr/include/aarch64-linux-gnu/bits/fcntl-linux.h \
+ /usr/include/aarch64-linux-gnu/bits/stat.h /usr/include/string.h \
  /usr/include/aarch64-linux-gnu/bits/types/locale_t.h \
  /usr/include/aarch64-linux-gnu/bits/types/__locale_t.h \
- /usr/include/strings.h /usr/include/aarch64-linux-gnu/sys/ipc.h \
- /usr/include/aarch64-linux-gnu/bits/ipctypes.h \
- /usr/include/aarch64-linux-gnu/bits/ipc.h \
- /usr/include/aarch64-linux-gnu/sys/shm.h \
- /usr/include/aarch64-linux-gnu/bits/shm.h /usr/include/pthread.h \
- /usr/include/sched.h /usr/include/aarch64-linux-gnu/bits/sched.h \
+ /usr/include/strings.h /usr/include/pthread.h /usr/include/sched.h \
+ /usr/include/aarch64-linux-gnu/bits/sched.h \
  /usr/include/aarch64-linux-gnu/bits/cpu-set.h /usr/include/time.h \
  /usr/include/aarch64-linux-gnu/bits/time.h \
  /usr/include/aarch64-linux-gnu/bits/types/struct_tm.h \
  /usr/include/aarch64-linux-gnu/bits/types/struct_itimerspec.h \
- /usr/include/aarch64-linux-gnu/bits/setjmp.h /usr/include/netinet/ip.h \
- /usr/include/netinet/in.h \
- /usr/include/aarch64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/aarch64-linux-gnu/sys/socket.h \
- /usr/include/aarch64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/aarch64-linux-gnu/bits/socket.h \
- /usr/include/aarch64-linux-gnu/bits/socket_type.h \
- /usr/include/aarch64-linux-gnu/bits/sockaddr.h \
- /usr/include/aarch64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/aarch64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/aarch64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/aarch64-linux-gnu/bits/in.h /usr/include/ifaddrs.h \
- /usr/include/arpa/inet.h src/common.h src/tcp_server.h \
- src/trafficSignal.h /usr/include/termios.h \
+ /usr/include/aarch64-linux-gnu/bits/setjmp.h /usr/include/termios.h \
  /usr/include/aarch64-linux-gnu/bits/termios.h \
  /usr/include/aarch64-linux-gnu/sys/ttydefaults.h

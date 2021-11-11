@@ -1,4 +1,15 @@
+//--------< Headers >--------//
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <string.h>
+
+#include <sys/ipc.h> 
+#include <sys/shm.h>
+#include <pthread.h>
 #include "gentleman.h"
+#include "common.h"
 
 void sigGenerator(sig_B genSig);
 
@@ -8,11 +19,15 @@ void *counter(void *Args){
     sig_B *newSigIn = args->newSigIn;
     sig_B *newSigOut = args->newSigOut;
     
-    for(int i=0; i<50; i++){
-        sprintf(newSigIn->statcode, "%s%s", counterSig->car_0, counterSig->ped_0);
-        sprintf(newSigOut->statcode, "%s%s", counterSig->car_1, counterSig->ped_1);
-        printf("newSigIn: %s\nnewSigOut: %s\n", newSigIn->statcode, newSigOut->statcode);
-        usleep(CNT_CYCLE);
+    while(1){
+        if(strlen(newSigIn->statcode) == 0){
+            continue;
+        }else{
+            sprintf(newSigIn->statcode, "%s%s", counterSig->car_0, counterSig->ped_0);
+            sprintf(newSigOut->statcode, "%s%s", counterSig->car_1, counterSig->ped_1);
+            printf("newSigIn: %s\nnewSigOut: %s\n", newSigIn->statcode, newSigOut->statcode);
+            usleep(CNT_CYCLE);
+        }
     }
 }
 
@@ -25,7 +40,7 @@ void gentleman(int shmId_A, int shmId_B){
     void *shmAddr;
     if((shmAddr = shmat(shmId_A, (void *)0, 0)) == (void *)-1) {
         perror("Shmat failed");
-        return 1;
+        exit(0);
     }
 
     counterSig = (sig_A *)shmAddr;

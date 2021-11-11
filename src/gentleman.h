@@ -1,6 +1,3 @@
-//--------< Headers >--------//
-#include "common.h"
-
 //--------< Defines >--------//
 #define SHM_B_KEY	1112
 #define CNT_CYCLE   100000 //usec

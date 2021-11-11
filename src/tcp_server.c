@@ -1,3 +1,18 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/ipc.h> 
+#include <sys/shm.h>
+#include <pthread.h>
+#include <netinet/ip.h>
+#include <ifaddrs.h>
+#include <arpa/inet.h> 
+#include <sys/socket.h>
+#include <netinet/in.h>
+
+#include "common.h"
 #include "tcp_server.h"
 #include "trafficSignal.h"
 
@@ -20,7 +35,7 @@ void *workThread(void *Args){
 
     if((shmAddr = shmat(args->shmId, (void *)0, 0)) == (void *)-1) {
         perror("Shmat failed");
-        return 1;
+        exit(0);
     }
     threadSig = (sig_A *)shmAddr;
     
@@ -60,7 +75,7 @@ int receiver(int shmId) {
     int addlen = sizeof(address);
 
     if((sockFd = socket(PF_INET, SOCK_STREAM, 0)) < 0){
-        printf("socket error");
+        printf("socket error\n");
         exit(1);
     }
     
@@ -71,26 +86,28 @@ int receiver(int shmId) {
 
     if(bind(sockFd, (struct sockaddr *)&address, addlen)<0)
     {
-        printf("socket bind error");
+        printf("socket bind error\n");
         exit(1);
     }
  
     if(listen(sockFd, 1) < 0)
     {
-        printf("socket listen wrong");
+        printf("socket listen wrong\n");
         exit(1);
     }
-
     printf("Server Activated\n");
+    
     pthread_t newThread[NORM_EDGE];
     threadArgs_A args;
-
     runTrafficSignalThread(SERIAL_PORT, BAUD_SPEED);
+
     for(int i=0; i<NORM_EDGE; i++){
+        printf("Got into for loop\n");
         if((clientSock = accept(sockFd, (struct sockaddr *)&clientAddr, (socklen_t *)&addlen))< 0) {
-            printf("client socket went wrong");
+            printf("client socket went wrong\n");
             exit(1);
         }
+        printf("accepted\n");
         args.sock = &clientSock;
         args.shmId = shmId;
         args.edgeType = i; // getEdgeType(ip_data)
