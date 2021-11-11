@@ -38,38 +38,37 @@ void *workThread(void *Args){
         exit(0);
     }
     threadSig = (sig_A *)shmAddr;
-    
+    printf("Thread\n");
     while(1) {
         recvData = recv(sock, buf, sizeof(buf), 0);
-        printf("recv: %s\n", buf);
+        //printf("recv: %s\n", buf);
         switch (edgeType)
         {
         case 0:
-            sprintf(threadSig->car_0,"%s ",buf);
+            sprintf(threadSig->car_0,"%s",buf);
             break;
         case 1:
-            sprintf(threadSig->ped_0,"%s ",buf);
+            sprintf(threadSig->ped_0,"%s",buf);
             break;
         case 2:
-            sprintf(threadSig->car_1,"%s ",buf);
+            sprintf(threadSig->car_1,"%s",buf);
             break;
         case 3:
-            sprintf(threadSig->ped_1,"%s ",buf);
+            sprintf(threadSig->ped_1,"%s",buf);
             break;
         default:
             break;
         }
 
         // get Traffic signal
-        threadSig->trafficSignal = getTrafficSignal();
-        if(threadSig->trafficSignal != 0){
-            threadSig->remainingTime = getRemainingTime();
-        }
+        //threadSig->trafficSignal = getTrafficSignal();
+        //if(threadSig->trafficSignal != 0){
+        //   threadSig->remainingTime = getRemainingTime();
+        //}
     }
 }
 
 int receiver(int shmId) {
-
     int sockFd, clientSock;
     struct sockaddr_in address, clientAddr;
     int addlen = sizeof(address);
@@ -90,17 +89,17 @@ int receiver(int shmId) {
         exit(1);
     }
  
-    if(listen(sockFd, 1) < 0)
+    if(listen(sockFd, 5) < 0)
     {
         printf("socket listen wrong\n");
         exit(1);
     }
     printf("Server Activated\n");
     
-    pthread_t newThread[NORM_EDGE];
-    threadArgs_A args;
     runTrafficSignalThread(SERIAL_PORT, BAUD_SPEED);
-
+    
+    pthread_t cliThread[NORM_EDGE];
+    threadArgs_A args;
     for(int i=0; i<NORM_EDGE; i++){
         printf("Got into for loop\n");
         if((clientSock = accept(sockFd, (struct sockaddr *)&clientAddr, (socklen_t *)&addlen))< 0) {
@@ -108,14 +107,15 @@ int receiver(int shmId) {
             exit(1);
         }
         printf("accepted\n");
+
         args.sock = &clientSock;
         args.shmId = shmId;
         args.edgeType = i; // getEdgeType(ip_data)
 
-        pthread_create(&newThread[i], NULL, workThread, (void *)&args);
+        pthread_create(&cliThread[i], NULL, workThread, (void *)&args);
     }
     for(int i=0; i<NORM_EDGE; i++){
-        pthread_join(newThread[0],NULL);
+        pthread_join(cliThread[0],NULL);
     }
     return 0;
 }

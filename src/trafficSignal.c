@@ -124,9 +124,10 @@ void runTrafficSignalThread(char * serialPort, int baudSpeed){
     int result, ret = -1;
     pthread_t p_thread;
 
-    ret = init_uart(serialPort, baudSpeed, &fd);
+    if((ret = init_uart(serialPort, baudSpeed, &fd)) == -1){
+      exit(0);
+    }
     printf("init uart [%d], [%d]\n", ret, fd);
-
     pthread_create( &p_thread, NULL, parseTrafficSignal, NULL);
 
 }

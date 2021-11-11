@@ -16,8 +16,8 @@ int process_A(int shmId) {
     return 0;
 }
 
-int process_B(int shmId_A, int shmId_B) {
-    gentleman(shmId_A, shmId_B);
+int process_B(int shmId_A) {//, int shmId_B) {
+    gentleman(shmId_A); //, shmId_B);
     return 0;
 }
 
@@ -54,7 +54,7 @@ int main(){
     }else{
         pid_B = fork();
         if(pid_B == 0){
-            process_B(shmId[0], shmId[1]);
+            process_B(shmId[0]);//, shmId[1]);
         }else{
             wait(pid_A);
             wait(pid_B);
