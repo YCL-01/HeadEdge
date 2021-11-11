@@ -84,7 +84,8 @@ int receiver(int shmId) {
     printf("Server Activated\n");
     pthread_t newThread[NORM_EDGE];
     threadArgs_A args;
-    
+
+    runTrafficSignalThread(SERIAL_PORT, BAUD_SPEED);
     for(int i=0; i<NORM_EDGE; i++){
         if((clientSock = accept(sockFd, (struct sockaddr *)&clientAddr, (socklen_t *)&addlen))< 0) {
             printf("client socket went wrong");
@@ -94,7 +95,6 @@ int receiver(int shmId) {
         args.shmId = shmId;
         args.edgeType = i; // getEdgeType(ip_data)
 
-        runTrafficSignalThread(SERIAL_PORT, BAUD_SPEED);
         pthread_create(&newThread[i], NULL, workThread, (void *)&args);
     }
     for(int i=0; i<NORM_EDGE; i++){
