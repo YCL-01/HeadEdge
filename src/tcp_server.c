@@ -19,8 +19,10 @@
 // define traffic signal port and baudspeed info
 #define SERIAL_PORT "/dev/tty0"
 #define BAUD_SPEED 38400
-
-//int getEdgeType(){}
+/*
+int getEdgeType(){
+    ip_table
+}*/
 
 void *workThread(void *Args){
     threadArgs_A *args = (threadArgs_A *)Args;
@@ -31,40 +33,53 @@ void *workThread(void *Args){
     int *sockAddr = args->sock;
     int sock = *(sockAddr);
     int recvData;
-    char buf[10] = {0, };
+    char buf[10];
+    char *edge, *data;
 
     if((shmAddr = shmat(args->shmId, (void *)0, 0)) == (void *)-1) {
         perror("Shmat failed");
         exit(0);
     }
     threadSig = (sig_A *)shmAddr;
-    printf("Thread\n");
+
     while(1) {
         recvData = recv(sock, buf, sizeof(buf), 0);
         //printf("recv: %s\n", buf);
-        switch (edgeType)
+        edge = strtok(buf, " ");
+        //printf("edge: %s\n",edge);
+        data = strtok(NULL, ".");
+        //printf("data: %s\n",data);
+        switch (edge[0])
         {
-        case 0:
-            sprintf(threadSig->car_0,"%s",buf);
+        case 'c':
+            switch (edge[1])
+            {
+            case '0':
+                sprintf(threadSig->car_0,"%s",data);
+                break;
+            case '1':
+                sprintf(threadSig->car_1,"%s",data);
+                break;
+            }
             break;
-        case 1:
-            sprintf(threadSig->ped_0,"%s",buf);
-            break;
-        case 2:
-            sprintf(threadSig->car_1,"%s",buf);
-            break;
-        case 3:
-            sprintf(threadSig->ped_1,"%s",buf);
-            break;
-        default:
+        case 'p':
+            switch (edge[1])
+            {
+            case '0':
+                sprintf(threadSig->ped_0,"%s",data);
+                break;
+            case '1':
+                sprintf(threadSig->ped_1,"%s",data);
+                break;
+            }
             break;
         }
 
-        // get Traffic signal
-        //threadSig->trafficSignal = getTrafficSignal();
-        //if(threadSig->trafficSignal != 0){
-        //   threadSig->remainingTime = getRemainingTime();
-        //}
+        //get Traffic signal
+        threadSig->trafficSignal = getTrafficSignal();
+        if(threadSig->trafficSignal != 0){
+            threadSig->remainingTime = getRemainingTime();
+        }
     }
 }
 
@@ -96,26 +111,27 @@ int receiver(int shmId) {
     }
     printf("Server Activated\n");
     
-    //runTrafficSignalThread(SERIAL_PORT, BAUD_SPEED);
+    runTrafficSignalThread(SERIAL_PORT, BAUD_SPEED);
     
     pthread_t cliThread[NORM_EDGE];
     threadArgs_A args;
+
     for(int i=0; i<NORM_EDGE; i++){
-        printf("Got into for loop\n");
         if((clientSock = accept(sockFd, (struct sockaddr *)&clientAddr, (socklen_t *)&addlen))< 0) {
             printf("client socket went wrong\n");
             exit(1);
         }
-        printf("accepted\n");
-
+        printf("new client connected %d\n", i);
         args.sock = &clientSock;
         args.shmId = shmId;
         args.edgeType = i; // getEdgeType(ip_data)
 
         pthread_create(&cliThread[i], NULL, workThread, (void *)&args);
     }
+
     for(int i=0; i<NORM_EDGE; i++){
         pthread_join(cliThread[0],NULL);
     }
+
     return 0;
 }

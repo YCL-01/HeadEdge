@@ -3,13 +3,13 @@
 
 //----< Network Setting >----//
 #define SERV_PORT		2555
-#define SERV_IP			"192.168.0.5"
+#define SERV_IP			"192.168.0.12"
 
 //#define VMS_PORT		100
 //#define SPK_PORT		9531
 #define MAX_BUFFER		256
 //#define COMPONETS		4
-#define NORM_EDGE		1		
+#define NORM_EDGE		4		
 
 //--------<IP TABLE>---------//
 // Should be added before testing in field

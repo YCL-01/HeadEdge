@@ -3,8 +3,8 @@ typedef struct signal_A{
 	int trafficSignal; // Traffic Signal 0 -> red, 1 -> green, 2-> green blink
 	int remainingTime; // represent remaining signal time. works on green/green blink
 	char car_0[10]; // SIG + SPEED
-	char car_1[10]; 
-	char ped_0[10]; // SIG
+	char ped_0[10]; 
+	char car_1[10]; // SIG
 	char ped_1[10];
 }sig_A;
 

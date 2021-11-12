@@ -44,16 +44,18 @@ int main(){
         exit(0);
     }
     */
-
+   
     //multiprocess
     int pid_A, pid_B, pid_C;
     pid_A = fork();
     if(pid_A == 0){
+        printf("process A\n");
         process_A(shmId[0]);
         sleep(1);
     }else{
         pid_B = fork();
         if(pid_B == 0){
+            printf("process B\n");
             process_B(shmId[0]);//, shmId[1]);
         }else{
             wait(pid_A);

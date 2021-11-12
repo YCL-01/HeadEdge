@@ -11,30 +11,7 @@
 #include "gentleman.h"
 #include "common.h"
 
-void sigGenerator(sig_B genSig);
-
-int sigCmp(sig_B *orgSigIn, sig_B *orgSigOut, sig_B *newSigIn, sig_B *newSigOut){
-
-    char *orgSigA = orgSigIn->statcode;
-    char *orgSigB = orgSigOut->statcode;
-    char *newSigA = newSigIn->statcode;
-    char *newSigB = newSigOut->statcode;
-    int change = 0;
-    
-    if(strcmp(orgSigA, newSigA)){
-        if(strcmp(orgSigB, newSigB)){
-            return 1;
-        }else{
-            return 2;
-        }
-    }else{
-        if(strcmp(orgSigB, newSigB)){
-            return 3;
-        }else{
-            return 4;
-        }
-    }
-}
+//void sigGenerator(sig_B genSig);
 
 void *counter(void *Args){
     threadArgs_B *args = (threadArgs_B *)Args;
@@ -48,40 +25,29 @@ void *counter(void *Args){
     
     int pedIn = 0, pedOut = 0;
 
+    //for(i=0; i<20; i++)
     while(1){
         sprintf(orgSigIn->statcode, "%s", newSigIn->statcode);
-        sprintf(orgSigOut->statcode, "%s", newSigIn->statcode);
-        pedIn = counterSig->ped_0;
-        pedOut = counterSig->ped_1;
-        //pedIn = ped_0
-        if(pedIn>=pedOut){
-            sprintf(newSigIn->statcode, "%s%s", counterSig->car_0, counterSig->ped_0);
-            sprintf(newSigOut->statcode, "%s%s", counterSig->car_1, counterSig->ped_0);
-        }else{
-            sprintf(newSigIn->statcode, "%s%s", counterSig->car_0, counterSig->ped_1);
-            sprintf(newSigOut->statcode, "%s%s", counterSig->car_1, counterSig->ped_1);
-        }
+        sprintf(orgSigOut->statcode, "%s", newSigOut->statcode);
         
-        switch(sigCmp(orgSigIn, newSigIn, orgSigOut, newSigOut))
-        {
-        case 1:
-            printf("none changed!\n");
-            usleep(CNT_CYCLE);
-            continue;
-        case 2:
-            printf("Pole 2 changed!\n");
-            usleep(CNT_CYCLE);
-            break;
-        case 3:
-            printf("Pole 1 changed!\n");
-            usleep(CNT_CYCLE);
-            break;
-        case 4:
-            printf("Pole-1 and Pole-2 changed!\n");
-            usleep(CNT_CYCLE);
-            break;
+        pedIn = atoi(counterSig->ped_0);
+        pedOut = atoi(counterSig->ped_1);
+        //pedIn = ped_0
+        if(pedIn >= pedOut){
+            sprintf(newSigIn->statcode, "%s %s", counterSig->car_0, counterSig->ped_0);
+            sprintf(newSigOut->statcode, "%s %s", counterSig->car_1, counterSig->ped_0);
+        }else{
+            sprintf(newSigIn->statcode, "%s %s", counterSig->car_0, counterSig->ped_1);
+            sprintf(newSigOut->statcode, "%s %s", counterSig->car_1, counterSig->ped_1);
         }
+
+        printf("OrgIn: %s\nOrgOut: %s\n", orgSigIn->statcode, orgSigOut->statcode);
+        printf("car_in: %s\ncar_out: %s\nnewIn: %s\nnewOut: %s\n\n\n", counterSig->car_0, counterSig->car_1, newSigIn->statcode, newSigOut->statcode);
+        //printf("orgIn: %s : newIn: %s \norgOut: %s : newIn: %s\n ", orgSigIn->statcode, newSigIn->statcode, orgSigOut->statcode, newSigIn->statcode);
+        
+        usleep(CNT_CYCLE);
     }
+    return (void *)0;
 }
 
 void gentleman(int shmId_A){ //, int shmId_B){
@@ -91,32 +57,42 @@ void gentleman(int shmId_A){ //, int shmId_B){
     sig_B newSigIn;
     sig_B newSigOut;
     threadArgs_B counterArgs;
+    //int i = 0;
 
     void *shmAddr;
     if((shmAddr = shmat(shmId_A, (void *)0, 0)) == (void *)-1) {
         perror("Shmat failed");
         exit(0);
+    }else{
+        printf("gentleman, shm complete\n");
     }
-
-    // Counter
-    // attach shm Sig_A to counterSig
-    counterSig = (sig_A *)shmAddr; 
-    //pthread_t counterThread; 
+    
+    // Counter //
+    counterSig = (sig_A *)shmAddr;
+    pthread_t counterThread; 
     counterArgs.counterSig = counterSig;
     counterArgs.newSigIn = &newSigIn;
     counterArgs.newSigOut = &newSigOut;
     counterArgs.orgSigIn = &orgSigIn;
     counterArgs.orgSigOut = &orgSigOut;
+    pthread_create(&counterThread, NULL, counter, (void *)&counterArgs);
+    pthread_join(counterThread, NULL);
+    
+    /*
     while(1){
+        usleep(CNT_CYCLE);
         if(strlen(counterSig->car_0) > 0){
-            printf("counterSig car_0: %s\n", counterSig->car_0);
-            printf("counterSig car_1: %s\n", counterSig->car_1);
-            printf("counterSig ped_0: %s\n", counterSig->ped_0);
-            printf("counterSig ped_1: %s\n", counterSig->ped_1);
-        }else{
-            continue;
+            printf("counterSig: %s / %s / %s / %s\n", counterSig->car_0, counterSig->ped_0, counterSig->car_1, counterSig->ped_1);
         }
     }
-    //pthread_create(&counterThread, NULL, counter, (void *)&counterArgs);
-    //pthread_join(counterThread, NULL);
+    */
+    //
+
+    if ( -1 != shmctl(shmId_A, IPC_RMID, 0)) { 
+        printf( "Shared Memory Delete Success!\n");
+    }else {
+		printf( "Shared Memory Delete Failed..\n");
+    }
+
+    exit(0);
 }
