@@ -9,7 +9,10 @@
 //#define SPK_PORT		9531
 #define MAX_BUFFER		256
 //#define COMPONETS		4
-#define NORM_EDGE		4		
+#define NORM_EDGE		4	
+
+#define TEST_IP			"192.168.0.10"
+#define TEST_PORT		2556	
 
 //--------<IP TABLE>---------//
 // Should be added before testing in field

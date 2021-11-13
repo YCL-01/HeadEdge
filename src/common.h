@@ -8,26 +8,30 @@ typedef struct signal_A{
 	char ped_1[10];
 }sig_A;
 
-typedef struct signal_B{
+typedef struct statSig{
 	char statcode[256];
-}sig_B;
+}statSig;
 
 typedef struct genSig{
 	char pole_0[10];
 	char pole_1[10];
 }genSig;
 
-typedef struct threadArgs_A{
+typedef struct recvArgs{
 	int *sock;
 	int shmId;
 	int edgeType;
-}threadArgs_A;
+}recvArgs;
 
-typedef struct threadArgs_B{
+typedef struct tranArgs{
+	int *sock;
+}tranArgs;
+
+typedef struct cntArgs{
 	sig_A *counterSig;
-    sig_B *newSigIn;
-    sig_B *newSigOut;
-	sig_B *orgSigIn;
-	sig_B *orgSigOut;
+    statSig *newSigIn;
+    statSig *newSigOut;
+	statSig *orgSigIn;
+	statSig *orgSigOut;
 	genSig *scnSig;
-}threadArgs_B;
+}cntArgs;

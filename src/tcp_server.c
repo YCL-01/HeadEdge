@@ -26,8 +26,8 @@ int getEdgeType(){
 
 
 
-void *recvThread(void *Args){
-    threadArgs_A *args = (threadArgs_A *)Args;
+void *recvThread(void *Args) {
+    recvArgs *args = (recvArgs *)Args;
     sig_A *threadSig;
     void *shmAddr;
     int edgeType = args->edgeType;
@@ -116,7 +116,7 @@ int receiver(int shmId) {
     runTrafficSignalThread(SERIAL_PORT, BAUD_SPEED);
     
     pthread_t cliThread[NORM_EDGE];
-    threadArgs_A args;
+    recvArgs args;
 
     for(int i=0; i<NORM_EDGE; i++){
         if((clientSock = accept(sockFd, (struct sockaddr *)&clientAddr, (socklen_t *)&addlen))< 0) {
@@ -135,5 +135,66 @@ int receiver(int shmId) {
         pthread_join(cliThread[0],NULL);
     }
 
+    return 0;
+}
+
+// void *tranThread(void *Args) { }
+
+int transceiver(int shmId) {
+    
+    genSig *shareMemBSig; // shouldbe scn
+    void *shmAddrB;
+    if((shmAddrB = shmat(shmId, (void *)0, 0)) == (void *)-1) {
+        perror("Shmat failed");
+        exit(0);
+    }else{
+        printf("gentleman, shm B complete\n");
+    }
+    shareMemBSig = (genSig *)shmAddrB;
+
+    int clientSock;
+    struct sockaddr_in servAddr;
+    if((clientSock = socket(PF_INET, SOCK_STREAM, 0)) == -1) {
+        printf("client socket error\n");
+    }
+
+    memset(&servAddr, 0, sizeof(servAddr));
+    servAddr.sin_family = AF_INET;
+    servAddr.sin_addr.s_addr = inet_addr(TEST_IP);
+    servAddr.sin_port = htons(TEST_PORT);
+
+    for(int i=0; i<5; i++){
+        printf("connection to client %d sec left\n", 5-i);
+        sleep(1);
+    }
+
+    if(connect(clientSock, (struct sockaddr*)&servAddr, sizeof(servAddr)) == -1) {
+        printf("client connect error\n");
+    }
+    char message[MAX_BUF_SIZE] = {0, };
+    int i = 0;
+    char prev_message[MAX_BUF_SIZE] = {0, };
+    while(1) {
+        if(i == 0) {
+            sprintf(message, "pole_0:%s / pole_1:%s", shareMemBSig->pole_0, shareMemBSig->pole_1);
+            sprintf(prev_message, "pole_0:%s / pole_1:%s", shareMemBSig->pole_0, shareMemBSig->pole_1);
+            printf("%s - %d\n", message, i);
+            write(clientSock, message, sizeof(message));
+            i++;
+        }
+        else {
+            sprintf(message, "pole_0:%s / pole_1:%s", shareMemBSig->pole_0, shareMemBSig->pole_1);
+            if(strcmp(prev_message, message) == 0) {
+                continue;
+                usleep(10000);
+            }else{
+                printf("%s - %d\n", message, i);
+                write(clientSock, message, sizeof(message));
+                sprintf(prev_message, "%s", message);
+                i++;
+            }
+        }
+    }
+    
     return 0;
 }

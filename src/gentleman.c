@@ -17,18 +17,18 @@ void sigGenerator(genSig *args){
 }
 
 void *counter(void *Args){
-    threadArgs_B *args = (threadArgs_B *)Args;
-    sig_B *orgSigIn = args->orgSigIn;
-    sig_B *orgSigOut = args->orgSigOut;
-    sig_B *newSigIn = args->newSigIn;
-    sig_B *newSigOut = args->newSigOut;
-    sig_A *counterSig = args->counterSig;
+    cntArgs *args = (cntArgs *)Args;
 
+    statSig *orgSigIn = args->orgSigIn;
+    statSig *orgSigOut = args->orgSigOut;
+    statSig *newSigIn = args->newSigIn;
+    statSig *newSigOut = args->newSigOut;
+
+    sig_A *counterSig = args->counterSig;
     genSig *result = args->scnSig;
     
     int pedIn = 0, pedOut = 0;
 
-    //for(i=0; i<20; i++)
     while(1){
         sprintf(orgSigIn->statcode, "%s", newSigIn->statcode);
         sprintf(orgSigOut->statcode, "%s", newSigOut->statcode);
@@ -49,10 +49,10 @@ void *counter(void *Args){
         //printf("OrgIn: %s\nOrgOut: %s\n", orgSigIn->statcode, orgSigOut->statcode);
         //printf("car_in: %s\ncar_out: %s\nnewIn: %s\nnewOut: %s\n", counterSig->car_0, counterSig->car_1, newSigIn->statcode, newSigOut->statcode);
         //printf("orgIn: %s : newIn: %s \norgOut: %s : newIn: %s\n ", orgSigIn->statcode, newSigIn->statcode, orgSigOut->statcode, newSigIn->statcode);
-        
+
         sprintf(result->pole_0, "%s", newSigIn->statcode);
         sprintf(result->pole_1, "%s", newSigOut->statcode);
-        printf("Pole_0: %s -- newIn: %s \nPole_1: %s -- newOut: %s\n\n\n", result->pole_0, newSigIn->statcode, result->pole_1, newSigOut->statcode);
+        //printf("Pole_0: %s -- newIn: %s \nPole_1: %s -- newOut: %s\n\n\n", result->pole_0, newSigIn->statcode, result->pole_1, newSigOut->statcode);
         usleep(CNT_CYCLE);
     }
     return (void *)0;
@@ -62,10 +62,10 @@ void gentleman(int shmId_A, int shmId_B){
     sig_A *shareMemASig;
     genSig *shareMemBSig;
     
-    sig_B orgSigIn;
-    sig_B orgSigOut;
-    sig_B newSigIn;
-    sig_B newSigOut;
+    statSig orgSigIn;
+    statSig orgSigOut;
+    statSig newSigIn;
+    statSig newSigOut;
 
     void *shmAddrA;
     if((shmAddrA = shmat(shmId_A, (void *)0, 0)) == (void *)-1) {
@@ -86,7 +86,7 @@ void gentleman(int shmId_A, int shmId_B){
     shareMemBSig = (genSig *)shmAddrB;
     
     // Counter //
-    threadArgs_B counterArgs;
+    cntArgs counterArgs;
     pthread_t counterThread; 
 
     counterArgs.counterSig = shareMemASig;
@@ -99,11 +99,11 @@ void gentleman(int shmId_A, int shmId_B){
     pthread_create(&counterThread, NULL, counter, (void *)&counterArgs);
     
     // Signal generator //
-    
+    /*
     while(1){
         usleep(CNT_CYCLE);
         sigGenerator(shareMemBSig);
-    }
+    }*/
 
     pthread_join(counterThread, NULL);
     //

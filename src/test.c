@@ -21,12 +21,12 @@ int process_B(int shmId_A, int shmId_B) {
     return 0;
 }
 
-/*
-int processC(int shmId) {
+
+int process_C(int shmId) {
     transceiver(shmId);
     return 0;
 }
-*/
+
 
 int main(){
     //share memory
@@ -58,13 +58,11 @@ int main(){
             printf("process B\n");
             process_B(shmId[0], shmId[1]);
         }else{
-            wait(pid_A);
-            wait(pid_B);
-            printf("Main processor exit!\n");
-            /*
+            
             pid_C = fork();
             if(pid_C == 0){
-                test_processC();
+                process_C(shmId[1]);
+                printf("process C\n");
             }else{
                 wait(pid_A);
                 wait(pid_B);
@@ -72,7 +70,7 @@ int main(){
                 printf("this is the parent");
                 return 0;
             }
-            */
+            
         }
     }
 }
