@@ -16,8 +16,8 @@ int process_A(int shmId) {
     return 0;
 }
 
-int process_B(int shmId_A) {//, int shmId_B) {
-    gentleman(shmId_A); //, shmId_B);
+int process_B(int shmId_A, int shmId_B) {
+    gentleman(shmId_A, shmId_B);
     return 0;
 }
 
@@ -38,12 +38,12 @@ int main(){
         printf("shmget failed!\n");
         exit(0);
     }
-    /*
-    if((shmId[1] = shmget(shmSCNKey, sizeof(sig_A), IPC_CREAT|0666)) == -1){
+    
+    if((shmId[1] = shmget(shmSCNKey, sizeof(genSig), IPC_CREAT|0666)) == -1){
         printf("shmget failed!\n");
         exit(0);
     }
-    */
+    
    
     //multiprocess
     int pid_A, pid_B, pid_C;
@@ -56,12 +56,11 @@ int main(){
         pid_B = fork();
         if(pid_B == 0){
             printf("process B\n");
-            process_B(shmId[0]);//, shmId[1]);
+            process_B(shmId[0], shmId[1]);
         }else{
             wait(pid_A);
             wait(pid_B);
             printf("Main processor exit!\n");
-
             /*
             pid_C = fork();
             if(pid_C == 0){

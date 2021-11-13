@@ -24,7 +24,9 @@ int getEdgeType(){
     ip_table
 }*/
 
-void *workThread(void *Args){
+
+
+void *recvThread(void *Args){
     threadArgs_A *args = (threadArgs_A *)Args;
     sig_A *threadSig;
     void *shmAddr;
@@ -126,7 +128,7 @@ int receiver(int shmId) {
         args.shmId = shmId;
         args.edgeType = i; // getEdgeType(ip_data)
 
-        pthread_create(&cliThread[i], NULL, workThread, (void *)&args);
+        pthread_create(&cliThread[i], NULL, recvThread, (void *)&args);
     }
 
     for(int i=0; i<NORM_EDGE; i++){

@@ -20,4 +20,4 @@ int receiver(int shmId);
 /* 	Recv SCENARIO LUT signals from 
  	gentleman and tranceive them
  	1 clients(*) - 4 server	 			*/ 
-// int transceiver(int shmId);
+int transceiver(int shmId);

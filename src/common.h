@@ -12,6 +12,11 @@ typedef struct signal_B{
 	char statcode[256];
 }sig_B;
 
+typedef struct genSig{
+	char pole_0[10];
+	char pole_1[10];
+}genSig;
+
 typedef struct threadArgs_A{
 	int *sock;
 	int shmId;
@@ -24,4 +29,5 @@ typedef struct threadArgs_B{
     sig_B *newSigOut;
 	sig_B *orgSigIn;
 	sig_B *orgSigOut;
+	genSig *scnSig;
 }threadArgs_B;

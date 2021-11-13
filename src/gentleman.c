@@ -11,17 +11,20 @@
 #include "gentleman.h"
 #include "common.h"
 
-//void sigGenerator(sig_B genSig);
+void sigGenerator(genSig *args){
+    printf("pole_1: %s\npole_2: %s\n\n\n", args->pole_0, args->pole_1);
+    // scenario func
+}
 
 void *counter(void *Args){
     threadArgs_B *args = (threadArgs_B *)Args;
-    sig_A *counterSig = args->counterSig;
-    
     sig_B *orgSigIn = args->orgSigIn;
     sig_B *orgSigOut = args->orgSigOut;
-    
     sig_B *newSigIn = args->newSigIn;
     sig_B *newSigOut = args->newSigOut;
+    sig_A *counterSig = args->counterSig;
+
+    genSig *result = args->scnSig;
     
     int pedIn = 0, pedOut = 0;
 
@@ -40,55 +43,78 @@ void *counter(void *Args){
             sprintf(newSigIn->statcode, "%s %s", counterSig->car_0, counterSig->ped_1);
             sprintf(newSigOut->statcode, "%s %s", counterSig->car_1, counterSig->ped_1);
         }
-
-        printf("OrgIn: %s\nOrgOut: %s\n", orgSigIn->statcode, orgSigOut->statcode);
-        printf("car_in: %s\ncar_out: %s\nnewIn: %s\nnewOut: %s\n\n\n", counterSig->car_0, counterSig->car_1, newSigIn->statcode, newSigOut->statcode);
+        // Signal compare
+        
+        
+        //printf("OrgIn: %s\nOrgOut: %s\n", orgSigIn->statcode, orgSigOut->statcode);
+        //printf("car_in: %s\ncar_out: %s\nnewIn: %s\nnewOut: %s\n", counterSig->car_0, counterSig->car_1, newSigIn->statcode, newSigOut->statcode);
         //printf("orgIn: %s : newIn: %s \norgOut: %s : newIn: %s\n ", orgSigIn->statcode, newSigIn->statcode, orgSigOut->statcode, newSigIn->statcode);
         
+        sprintf(result->pole_0, "%s", newSigIn->statcode);
+        sprintf(result->pole_1, "%s", newSigOut->statcode);
+        printf("Pole_0: %s -- newIn: %s \nPole_1: %s -- newOut: %s\n\n\n", result->pole_0, newSigIn->statcode, result->pole_1, newSigOut->statcode);
         usleep(CNT_CYCLE);
     }
     return (void *)0;
 }
 
-void gentleman(int shmId_A){ //, int shmId_B){
-    sig_A *counterSig;
+void gentleman(int shmId_A, int shmId_B){
+    sig_A *shareMemASig;
+    genSig *shareMemBSig;
+    
     sig_B orgSigIn;
     sig_B orgSigOut;
     sig_B newSigIn;
     sig_B newSigOut;
-    threadArgs_B counterArgs;
-    //int i = 0;
 
-    void *shmAddr;
-    if((shmAddr = shmat(shmId_A, (void *)0, 0)) == (void *)-1) {
+    void *shmAddrA;
+    if((shmAddrA = shmat(shmId_A, (void *)0, 0)) == (void *)-1) {
         perror("Shmat failed");
         exit(0);
     }else{
-        printf("gentleman, shm complete\n");
+        printf("gentleman, shm A complete\n");
     }
+    shareMemASig = (sig_A *)shmAddrA;
+
+    void *shmAddrB;
+    if((shmAddrB = shmat(shmId_B, (void *)0, 0)) == (void *)-1) {
+        perror("Shmat failed");
+        exit(0);
+    }else{
+        printf("gentleman, shm B complete\n");
+    }
+    shareMemBSig = (genSig *)shmAddrB;
     
     // Counter //
-    counterSig = (sig_A *)shmAddr;
+    threadArgs_B counterArgs;
     pthread_t counterThread; 
-    counterArgs.counterSig = counterSig;
+
+    counterArgs.counterSig = shareMemASig;
     counterArgs.newSigIn = &newSigIn;
     counterArgs.newSigOut = &newSigOut;
     counterArgs.orgSigIn = &orgSigIn;
     counterArgs.orgSigOut = &orgSigOut;
+    counterArgs.scnSig = shareMemBSig;
+
     pthread_create(&counterThread, NULL, counter, (void *)&counterArgs);
-    pthread_join(counterThread, NULL);
     
-    /*
+    // Signal generator //
+    
     while(1){
         usleep(CNT_CYCLE);
-        if(strlen(counterSig->car_0) > 0){
-            printf("counterSig: %s / %s / %s / %s\n", counterSig->car_0, counterSig->ped_0, counterSig->car_1, counterSig->ped_1);
-        }
+        sigGenerator(shareMemBSig);
     }
-    */
+
+    pthread_join(counterThread, NULL);
     //
 
     if ( -1 != shmctl(shmId_A, IPC_RMID, 0)) { 
+        printf( "Shared Memory Delete Success!\n");
+    }else {
+		printf( "Shared Memory Delete Failed..\n");
+    }
+
+    if ( -1 != shmctl(shmId_B, IPC_RMID, 0)) { 
         printf( "Shared Memory Delete Success!\n");
     }else {
 		printf( "Shared Memory Delete Failed..\n");

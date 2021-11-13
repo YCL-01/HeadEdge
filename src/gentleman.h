@@ -5,4 +5,4 @@
 //--------< Function >-------//
 //void sigGenerator();
 void *counter(void *Args);
-void gentleman(int shmId_A);//, int shmId_B);
+void gentleman(int shmId_A, int shmId_B);
