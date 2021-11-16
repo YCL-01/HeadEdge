@@ -34,12 +34,12 @@ int main(){
     key_t shmSigKey = SHM_A_KEY;
     key_t shmSCNKey = SHM_B_KEY;
 
-    if((shmId[0] = shmget(shmSigKey, sizeof(sig_A), IPC_CREAT|0666)) == -1){
+    if((shmId[0] = shmget(shmSigKey, sizeof(recvSig), IPC_CREAT|0666)) == -1){
         printf("shmget failed!\n");
         exit(0);
     }
     
-    if((shmId[1] = shmget(shmSCNKey, sizeof(genSig), IPC_CREAT|0666)) == -1){
+    if((shmId[1] = shmget(shmSCNKey, sizeof(actSig), IPC_CREAT|0666)) == -1){
         printf("shmget failed!\n");
         exit(0);
     }
