@@ -11,6 +11,59 @@
 #include "gentleman.h"
 #include "common.h"
 
+// compile error 나서 gentleman.h 에 있는 작성되있던 lookuptable, 옮겼습니다.
+const scn scnLookUpTable[] = {
+    { "0 0 0", "A1", "0" }, 
+    { "0 0 1", "A2", "0" },
+    { "0 0 2", "A3", "0" },  
+    { "0 0 3", "A4", "0" }, 
+    { "0 1 0", "A5", "0" }, 
+    { "0 1 1", "A6", "1" }, 
+    { "0 1 2", "A7", "1" },
+    { "0 1 3", "A8", "1" },  
+    { "0 2 0", "A9", "0" }, 
+    { "0 2 1", "A10", "1" },
+    { "0 2 2", "A11", "1" },
+    { "0 2 3", "A12", "1" }, 
+    { "0 3 0", "A13", "0" },
+    { "0 3 1", "A14", "2" },
+    { "0 3 2", "A15", "2" }, 
+    { "0 3 3", "A16", "2" },  
+    { "1 0 0", "A17", "0" }, 
+    { "1 0 1", "A18", "0" },
+    { "1 0 2", "A19", "0" }, 
+    { "1 0 3", "A20", "0" }, 
+    { "1 1 0", "A21", "0" },  
+    { "1 1 1", "A22", "1" },
+    { "1 1 2", "A23", "1" }, 
+    { "1 1 3", "A24", "1" },
+    { "1 2 0", "A25", "0" }, 
+    { "1 2 1", "A26", "1" },
+    { "1 2 2", "A27", "1" },
+    { "1 2 3", "A28", "1" }, 
+    { "1 3 0", "A29", "0" },  
+    { "1 3 1", "A30", "2" },
+    { "1 3 2", "A31", "2" }, 
+    { "1 3 3", "A32", "2" }, 
+    { "2 0 0", "A33", "0" }, 
+    { "2 0 1", "A34", "0" },  
+    { "2 0 2", "A35", "0" }, 
+    { "2 0 3", "A36", "0" },
+    { "2 1 0", "A37", "0" },
+    { "2 1 1", "A38", "1" }, 
+    { "2 1 2", "A49", "2" },  
+    { "2 1 3", "A40", "2" }, 
+    { "2 2 0", "A41", "0" }, 
+    { "2 2 1", "A42", "1" }, 
+    { "2 2 2", "A43", "2" },  
+    { "2 2 3", "A44", "2" }, 
+    { "2 3 0", "A45", "0" },
+    { "2 3 1", "A46", "2" },
+    { "2 3 2", "A47", "3" },
+    { "2 3 3", "A48", "3" } 
+}; 
+
+
 scn getScnCode(char *stat){
 	
 	int i=0;
@@ -44,6 +97,8 @@ void *sigGen(void *Args) {
             usleep(GEN_CYCLE);
             break;
         case 1:
+        // switch 문에서 변수 선언할때 중괄호 없으면 컴파일 에러 나서 추가했습니다.
+            {
             scn result = getScnCode(stat->poleStat0);
             sprintf(shmB->pole0.scnCode, "%s", result.code);
             sprintf(shmB->pole0.riskRate, "%s", result.riskRate);
@@ -51,7 +106,9 @@ void *sigGen(void *Args) {
             sprintf(shmB->pole1.speed, "%s", stat->pole1Speed);
             usleep(GEN_CYCLE);
             break;
+            }
         case 2:
+            {
             scn result = getScnCode(stat->poleStat1);
             sprintf(shmB->pole1.scnCode, "%s", result.code);
             sprintf(shmB->pole1.riskRate, "%s", result.riskRate);
@@ -59,7 +116,9 @@ void *sigGen(void *Args) {
             sprintf(shmB->pole1.speed, "%s", stat->pole1Speed);
             usleep(GEN_CYCLE);
             break;
+            }
         case 3:
+            {
             scn result_0 = getScnCode(stat->poleStat0);
             scn result_1 = getScnCode(stat->poleStat1);
             sprintf(shmB->pole0.scnCode, "%s", result_0.code);
@@ -70,6 +129,7 @@ void *sigGen(void *Args) {
             sprintf(shmB->pole1.speed, "%s", stat->pole1Speed);
             usleep(GEN_CYCLE);
             break;
+            }
         }
     }
 }
