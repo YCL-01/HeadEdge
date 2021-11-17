@@ -10,7 +10,7 @@
 
 //----< Network Setting >----//
 #define SERV_PORT		2555
-#define SERV_IP			"192.168.0.12"
+#define SERV_IP			"192.168.0.34"
 
 //#define VMS_PORT		100
 //#define SPK_PORT		9531
@@ -28,13 +28,6 @@ typedef struct client{
 	char edgeType[5];
 }client;
 
-const client edgeIpList[] = {
-    { "192.168.0.30", "C0" }, 	// pole 0 car edge 
-    { "192.168.0.32", "C1" }, 	// pole 1 car edge  
-    { "192.168.0.31", "P0" }, 	// pole 0 ped edge
-    { "192.168.0.33", "P1" }, 	// pole 1 ped edge
-}; 
-
 
 
 //-------< Functions >-------//
@@ -46,3 +39,4 @@ void *recvThread(void *Args);
  	gentleman and tranceive them
  	1 clients(*) - 4 server	 			*/ 
 int transceiver(int shmId);
+
