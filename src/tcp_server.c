@@ -20,6 +20,15 @@
 #define SERIAL_PORT "/dev/tty0"
 #define BAUD_SPEED 38400
 
+// compile error 나서 tcp_server.h 에 있는 작성되있던 ip list, 옮겼습니다.
+const client edgeIpList[] = {
+    { "192.168.0.30", "C0" }, 	// pole 0 car edge 
+    { "192.168.0.32", "C1" }, 	// pole 1 car edge  
+    { "192.168.0.31", "P0" }, 	// pole 0 ped edge
+    { "192.168.0.33", "P1" }, 	// pole 1 ped edge
+}; 
+
+
 char *getEdgeType(char *ip) {
 	int i=0;
 	while(1){
