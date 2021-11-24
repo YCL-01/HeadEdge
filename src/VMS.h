@@ -36,9 +36,9 @@ enum VMS_CODE
 class VMS : public BaseThread
 {
 public:
-    explicit VMS(const char *ip, int port, int is_smart_poll, int pol_num) : IP(ip),
+    explicit VMS(const char *ip, int port, int is_smart_poll, int pol_num, int is_fucked_up) : IP(ip),
                                                                 PORT(port),
-                                                                is_smart_poll(is_smart_poll), pol_num(pol_num),normal_count(1), normal_state(true){};
+                                                                is_smart_poll(is_smart_poll),pol_num(pol_num),is_fucked_up(is_fucked_up),normal_count(1), normal_state(true){};
     virtual ~VMS();
 
     bool onEventChanged(VMS_CODE);
@@ -67,6 +67,7 @@ protected:
     int id;
     int carId;
     int is_smart_poll;
+    int is_fucked_up;
     int pol_num;
     int normal_count;
     bool normal_state;
