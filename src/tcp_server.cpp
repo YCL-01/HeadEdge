@@ -224,6 +224,7 @@ int transceiver(int shmId) {
     sprintf(current->pole1.pol_num, "%d", 1);
 
     if (i == 0) {
+      
 
       sprintf(prev->pole0.scnCode, "%s", shareMemB->pole0.scnCode);
       sprintf(prev->pole0.riskRate, "%s", shareMemB->pole0.riskRate);
@@ -243,7 +244,6 @@ int transceiver(int shmId) {
       pthread_create(&main, &mainattr, ped_control, (void *)&(current->main));
       // pthread_detach(pol0);
       // pthread_detach(pol1);
-      pthread_detach(main);
 
       i++;
     }
@@ -253,7 +253,7 @@ int transceiver(int shmId) {
       // main scn: %s\n",current->pole0.scnCode,prev->pole0.scnCode,
       // current->main.scnCode, prev->main.scnCode);
 
-      if (atoi(current->main.riskRate) > atoi(prev->main.riskRate)) {
+      if (atoi(current->main.riskRate) > atoi(prev->main.riskRate)  && atoi(current->main.riskRate) >1 ) {
 
         printf("Danger increased\n");
 
@@ -281,10 +281,6 @@ int transceiver(int shmId) {
         // (void *) &(current->pole1));
         pthread_create(&main, &mainattr, ped_control, (void *)&(current->main));
 
-        // pthread_detach(pol0);
-        // pthread_detach(pol1);
-        pthread_detach(main);
-
       }
       // Risk not changed
       else {
@@ -292,6 +288,7 @@ int transceiver(int shmId) {
         if (strcmp(current->pole0.scnCode, prev->pole0.scnCode) == 0) {
 
           if (strcmp(current->pole1.scnCode, prev->pole1.scnCode) == 0) {
+            usleep(100);
             continue;
 
           } else {
@@ -317,20 +314,20 @@ int transceiver(int shmId) {
             component_controller((void *)&(current->pole1));
           }
         }
-
+        
         // main changed
         if (strcmp(current->main.scnCode, prev->main.scnCode) == 0) {
           usleep(100);
         } else {
           int ret = pthread_kill(main, 0);
           printf("ret value %d\n", ret);
+          
           if (ret != 0) {
-            printf("Ped_trhead executues\n");
+            printf("Ped_trhead does not exist\n");
             // printf("this is tranceiver else, current Thread Does not
             // exist\n");
             pthread_create(&main, &mainattr, ped_control,
                            (void *)&(current->main));
-            pthread_detach(main);
           }
         }
       }

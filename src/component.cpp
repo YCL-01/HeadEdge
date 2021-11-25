@@ -127,41 +127,41 @@ void pedspeaker_stopper(int spk_index){
 
     switch(spk_index){
         case 17:
+            speaker_ped1_1->control("index_play", 28);
+            speaker_ped1_2->control("index_play", 28);
+            speaker_movPed_1->control("index_play", 28);
+            speaker_movPed_2->control("index_play", 28);
+            
+            break;
+        case 23:
             speaker_ped1_1->control("index_play", 29);
             speaker_ped1_2->control("index_play", 29);
             speaker_movPed_1->control("index_play", 29);
             speaker_movPed_2->control("index_play", 29);
             
             break;
-        case 23:
+        case 25:
             speaker_ped1_1->control("index_play", 30);
             speaker_ped1_2->control("index_play", 30);
             speaker_movPed_1->control("index_play", 30);
             speaker_movPed_2->control("index_play", 30);
+           
+            break;
+        case 26:
+            speaker_ped1_1->control("index_play", 28);
+            speaker_ped1_2->control("index_play", 28);
+            speaker_movPed_1->control("index_play", 28);
+            speaker_movPed_2->control("index_play", 28);
             
             break;
-        case 25:
+        case 27:
             speaker_ped1_1->control("index_play", 31);
             speaker_ped1_2->control("index_play", 31);
             speaker_movPed_1->control("index_play", 31);
             speaker_movPed_2->control("index_play", 31);
            
             break;
-        case 26:
-            speaker_ped1_1->control("index_play", 29);
-            speaker_ped1_2->control("index_play", 29);
-            speaker_movPed_1->control("index_play", 29);
-            speaker_movPed_2->control("index_play", 29);
-            
-            break;
         case 28:
-            speaker_ped1_1->control("index_play", 32);
-            speaker_ped1_2->control("index_play", 32);
-            speaker_movPed_1->control("index_play", 32);
-            speaker_movPed_2->control("index_play", 32);
-           
-            break;
-        case 29:
             
             break;
         
@@ -175,6 +175,7 @@ void pedspeaker_stopper(int spk_index){
             break;
     }
     int ret;
+    printf("ped thread dies\n");
     pthread_exit(&ret);
     }
     
@@ -211,9 +212,9 @@ void * ped_control(void * scn){
         speaker_movPed_2->control("volume", min_volume);
         }
   if (ped_spk_index>=0){
-        printf("ped speaker stop stec :%d \n", ped_spekaer_stop_sec);
-
-        sleep(ped_spekaer_stop_sec*2);
+        printf("ped speaker stop stec :%d ped Thread is alive!\n", ped_spekaer_stop_sec*2);
+        
+        sleep((ped_spekaer_stop_sec*2));
         pedspeaker_stopper(ped_spk_index);
     }
     
@@ -249,16 +250,17 @@ void component_init(void * addr ){
     vms_1->setAddress(addr);
     vms_2->setAddress(addr);
     vms_1_1->setAddress(addr);
-    vms_1_1->initialize();
-    vms_1->initialize();
-    vms_2 ->initialize();
+    // vms_1_1->initialize();
+    // vms_1->initialize();
+    // vms_2 ->initialize();
     speaker_ped1_1->init(); 
     speaker_ped1_2->init(); 
     speaker_car1_1->init(); 
     speaker_car1_2->init(); 
     speaker_movPed_1->init();
     speaker_movPed_2->init();
-    
+    // 스피커 실행 안시키고 싶으면 play를 코멘트하고 stop을 풀면 됌
+
     
     // speaker_ped1_1->control("play", 0);
     // speaker_ped1_2->control("play", 0);
@@ -267,7 +269,6 @@ void component_init(void * addr ){
     // speaker_car1_1->control("play", 0);
     // speaker_car1_2->control("play", 0);
 
-    // 스피커 실행 안시키고 싶으면 play를 코멘트하고 stop을 풀면 됌
     speaker_ped1_1->control("stop", 0);
     speaker_ped1_2->control("stop", 0);
     speaker_movPed_1->control("stop", 0);
@@ -303,14 +304,12 @@ void * component_controller(void * scn){
             vms_control(vms_1_1,vms_index,car_speed);
             
             if (car_spk_index >=0){
-
                 speaker_car1_1->control("volume", max_volume);
                 speaker_car1_1->control("index_play", car_spk_index);
             }
             else{
                 carspeaker_stopper(speaker_car1_1);
             }
-           
             break;
         }
         case 1:{
@@ -320,9 +319,8 @@ void * component_controller(void * scn){
                 speaker_car1_2->control("index_play", car_spk_index);
             } 
             else{
-                    carspeaker_stopper(speaker_car1_2);
+                carspeaker_stopper(speaker_car1_2);
             }
-         
             break;
         }
 
