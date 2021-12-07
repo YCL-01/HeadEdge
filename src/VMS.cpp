@@ -308,12 +308,12 @@ bool VMS::sendMsg()
    
 
     int result = send(VMS_SOCKET, ret, packet_len, 0);
-    // int bytesReceived = 0;
-    // std::vector<uint8_t> buffer(20);
+    int bytesReceived = 0;
+    std::vector<uint8_t> buffer(20);
 
-    // bytesReceived = recv(VMS_SOCKET, &buffer[0], buffer.size(), 0);
+    bytesReceived = recv(VMS_SOCKET, &buffer[0], buffer.size(), 0);
     // printf("%02x %02x %02x %02x %02x %02x %02x\n", buffer.data()[0],buffer.data()[1], buffer.data()[2], buffer.data()[3], buffer.data()[4], buffer.data()[5], buffer.data()[6]);
-    //printf("result %d", result);
+    // printf("result %d", result);
     if (is_smart_poll){
         
         sleep(1);
@@ -366,10 +366,10 @@ bool VMS::threadExecute()
     std::chrono::duration<double> elapsed;
     elapsed = now-updated;
     if (is_fucked_up){
-        if(elapsed.count() > 1800){
+        if(elapsed.count() > 1400){
             updated = std::chrono::system_clock::now();
             send(VMS_SOCKET, OFF, 16, 0);
-            sleep(5);
+            sleep(10);
             send(VMS_SOCKET, ON, 16, 0);
             // sleep(1);
         }

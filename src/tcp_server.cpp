@@ -17,12 +17,14 @@
 #include <sys/shm.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <signal.h>
 
 // define traffic signal port and baudspeed info
 #define SERIAL_PORT "/dev/ttyUSB0"
 #define BAUD_SPEED 38400
 
-typedef struct client {
+typedef struct client
+{
   char ip[15];
   char edgeType[5];
 } client;
@@ -35,18 +37,24 @@ const client edgeIpList[] = {
     {"192.168.0.33", "P1"}, // pole 1 ped edge
 };
 
-const char *getEdgeType(char *ip) {
+const char *getEdgeType(char *ip)
+{
   int i = 0;
-  while (1) {
-    if ((strcmp(ip, edgeIpList[i].ip)) == 0) {
+  while (1)
+  {
+    if ((strcmp(ip, edgeIpList[i].ip)) == 0)
+    {
       break;
-    } else {
+    }
+    else
+    {
       i++;
     }
   }
   return edgeIpList[i].edgeType;
 }
-void *recvThread(void *Args) {
+void *recvThread(void *Args)
+{
   recvArgs *args = (recvArgs *)Args;
   recvSig *shmA;
   void *shmAddr;
@@ -63,18 +71,22 @@ void *recvThread(void *Args) {
       0,
   };
 
-  if ((shmAddr = shmat(args->shmId, (void *)0, 0)) == (void *)-1) {
+  if ((shmAddr = shmat(args->shmId, (void *)0, 0)) == (void *)-1)
+  {
     perror("Shmat failed");
     exit(0);
   }
   shmA = (recvSig *)shmAddr;
 
-  while (1) {
+  while (1)
+  {
     recvData = recv(sock, buf, sizeof(buf), 0);
     sprintf(data, "%s", buf);
-    switch (edgeType[0]) {
+    switch (edgeType[0])
+    {
     case 'C':
-      switch (edgeType[1]) {
+      switch (edgeType[1])
+      {
       case '0':
         sprintf(shmA->car_0, "%c", data[0]);
         sprintf(shmA->car_0_speed, "%c%c", data[1], data[2]);
@@ -88,7 +100,8 @@ void *recvThread(void *Args) {
       }
       break;
     case 'P':
-      switch (edgeType[1]) {
+      switch (edgeType[1])
+      {
       case '0':
         sprintf(shmA->ped_0, "%c", data[0]);
         usleep(10);
@@ -106,16 +119,19 @@ void *recvThread(void *Args) {
   }
 }
 
-int receiver(int shmId) {
+int receiver(int shmId)
+{
   int sockFd;
   int clientSock[4];
   struct sockaddr_in address;
   struct sockaddr_in clientAddr[4];
   int addlen = sizeof(address);
   int opt = 1;
+  signal(SIGPIPE, SIG_IGN);
 
   // Server (HeadEdge) //
-  if ((sockFd = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
+  if ((sockFd = socket(PF_INET, SOCK_STREAM, 0)) < 0)
+  {
     printf("socket error\n");
     exit(1);
   }
@@ -124,11 +140,13 @@ int receiver(int shmId) {
   address.sin_family = AF_INET;
   address.sin_addr.s_addr = inet_addr(SERV_IP);
   address.sin_port = htons(SERV_PORT);
-  if (bind(sockFd, (struct sockaddr *)&address, addlen) < 0) {
+  if (bind(sockFd, (struct sockaddr *)&address, addlen) < 0)
+  {
     printf("socket bind error\n");
     exit(1);
   }
-  if (listen(sockFd, 5) < 0) {
+  if (listen(sockFd, 5) < 0)
+  {
     printf("socket listen wrong\n");
     exit(1);
   }
@@ -141,9 +159,11 @@ int receiver(int shmId) {
   recvArgs Args;
   char *clientIp;
 
-  for (int i = 0; i < NORM_EDGE; i++) {
+  for (int i = 0; i < NORM_EDGE; i++)
+  {
     if ((clientSock[i] = accept(sockFd, (struct sockaddr *)&clientAddr[i],
-                                (socklen_t *)&addlen)) < 0) {
+                                (socklen_t *)&addlen)) < 0)
+    {
       printf("client socket went wrong\n");
       exit(1);
     }
@@ -156,13 +176,17 @@ int receiver(int shmId) {
     pthread_create(&normThread[i], NULL, recvThread, (void *)&Args);
   }
 
-  for (int i = 0; i < NORM_EDGE; i++) {
+  for (int i = 0; i < NORM_EDGE; i++)
+  {
     pthread_join(normThread[0], NULL);
   }
 
-  if (-1 != shmctl(shmId, IPC_RMID, 0)) {
+  if (-1 != shmctl(shmId, IPC_RMID, 0))
+  {
     printf("Shared Memory Delete Success!\n");
-  } else {
+  }
+  else
+  {
     printf("Shared Memory Delete Failed..\n");
   }
 
@@ -170,14 +194,18 @@ int receiver(int shmId) {
 }
 
 // void *tranThread(void *Args) { }
-int transceiver(int shmId) {
+int transceiver(int shmId)
+{
 
   actSig *shareMemB; // shouldbe scn
   void *shmAddrB;
-  if ((shmAddrB = shmat(shmId, (void *)0, 0)) == (void *)-1) {
+  if ((shmAddrB = shmat(shmId, (void *)0, 0)) == (void *)-1)
+  {
     perror("Shmat failed");
     exit(0);
-  } else {
+  }
+  else
+  {
     printf("gentleman, shm B complete\n");
   }
   shareMemB = (actSig *)shmAddrB;
@@ -207,7 +235,8 @@ int transceiver(int shmId) {
   pthread_attr_t mainattr;
   pthread_attr_init(&mainattr);
   pthread_attr_setdetachstate(&mainattr, PTHREAD_CREATE_DETACHED);
-  while (1) {
+  while (1)
+  {
     current_main = main_scn(shareMemB->pole0, shareMemB->pole1);
 
     sprintf(current->pole0.scnCode, "%s", shareMemB->pole0.scnCode);
@@ -223,8 +252,8 @@ int transceiver(int shmId) {
     sprintf(current->pole0.pol_num, "%d", 0);
     sprintf(current->pole1.pol_num, "%d", 1);
 
-    if (i == 0) {
-      
+    if (i == 0)
+    {
 
       sprintf(prev->pole0.scnCode, "%s", shareMemB->pole0.scnCode);
       sprintf(prev->pole0.riskRate, "%s", shareMemB->pole0.riskRate);
@@ -248,12 +277,14 @@ int transceiver(int shmId) {
       i++;
     }
 
-    else {
+    else
+    {
       // printf("pole1 current scn :%s pole1 prev scn :%s main scn : %s prev
       // main scn: %s\n",current->pole0.scnCode,prev->pole0.scnCode,
       // current->main.scnCode, prev->main.scnCode);
 
-      if (atoi(current->main.riskRate) > atoi(prev->main.riskRate)  && atoi(current->main.riskRate) >1 ) {
+      if (atoi(current->main.riskRate) > atoi(prev->main.riskRate) && atoi(current->main.riskRate) > 1)
+      {
 
         printf("Danger increased\n");
 
@@ -261,12 +292,16 @@ int transceiver(int shmId) {
         // pthread_cancel(pol0);
         // pthread_cancel(pol1);
 
-        try {
-          if (pthread_kill(main, 0) == 0) {
+        try
+        {
+          if (pthread_kill(main, 0) == 0)
+          {
             pthread_cancel(main);
             printf("Thread cancled\n");
           }
-        } catch (int exception) {
+        }
+        catch (int exception)
+        {
           printf("Thread is not exist\n");
         }
 
@@ -280,30 +315,38 @@ int transceiver(int shmId) {
         // &(current->pole0)); pthread_create(&pol1, NULL, component_controller,
         // (void *) &(current->pole1));
         pthread_create(&main, &mainattr, ped_control, (void *)&(current->main));
-
       }
       // Risk not changed
-      else {
+      else
+      {
 
-        if (strcmp(current->pole0.scnCode, prev->pole0.scnCode) == 0) {
+        if (strcmp(current->pole0.scnCode, prev->pole0.scnCode) == 0)
+        {
 
-          if (strcmp(current->pole1.scnCode, prev->pole1.scnCode) == 0) {
+          if (strcmp(current->pole1.scnCode, prev->pole1.scnCode) == 0)
+          {
             usleep(100);
             continue;
-
-          } else {
+          }
+          else
+          {
             printf("if else  num1 %s\n", current->pole1.pol_num);
             component_controller((void *)&(current->pole1));
             // pthread_create(&pol1, NULL, component_controller, (void *)
             // &(current->pole1)); pthread_detach(pol1);
           }
-        } else {
-          if (strcmp(current->pole1.scnCode, prev->pole1.scnCode) == 0) {
+        }
+        else
+        {
+          if (strcmp(current->pole1.scnCode, prev->pole1.scnCode) == 0)
+          {
             printf("if else  num2 %s\n", current->pole1.pol_num);
             component_controller((void *)&(current->pole0));
             // pthread_create(&pol0, NULL, component_controller, (void *)
             // &(current->pole0)); pthread_detach(pol0);
-          } else {
+          }
+          else
+          {
             printf("if else num3 %s\n", current->pole1.pol_num);
             // component_controller((void *) &(current->pole1));
             // pthread_create(&pol1, NULL, component_controller, (void *)
@@ -314,15 +357,19 @@ int transceiver(int shmId) {
             component_controller((void *)&(current->pole1));
           }
         }
-        
+
         // main changed
-        if (strcmp(current->main.scnCode, prev->main.scnCode) == 0) {
+        if (strcmp(current->main.scnCode, prev->main.scnCode) == 0)
+        {
           usleep(100);
-        } else {
+        }
+        else
+        {
           int ret = pthread_kill(main, 0);
           printf("ret value %d\n", ret);
-          
-          if (ret != 0) {
+
+          if (ret != 0)
+          {
             printf("Ped_trhead does not exist\n");
             // printf("this is tranceiver else, current Thread Does not
             // exist\n");
