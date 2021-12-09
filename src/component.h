@@ -7,4 +7,4 @@ void component_init(void *);
 void * component_controller(void * a);
 void  * decide_main_function(void * a);
 scenario main_scn (scenario a, scenario b);
-std::string get_current_time()
+// std::string get_current_time()

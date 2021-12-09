@@ -328,26 +328,13 @@ int transceiver(int shmId)
           }
           else
           {
-            printf("both pol scn changed");
+            printf("both pol scn changed\n");
             component_controller((void *)&(current->pole0));
             component_controller((void *)&(current->pole1));
-            try
-            {
-              if (pthread_kill(main, 0) == 0)
-              {
-                pthread_cancel(main);
-                printf("Thread cancled\n");
-              }
-            }
-            catch (int exception)
-            {
-              printf("Thread is not exist\n");
-            }
-            printf("New Thread started\n");
-            pthread_create(&main, &mainattr, ped_control, (void *)&(current->main));
           }
         }
 
+        
         // main changed
         if (strcmp(current->main.scnCode, prev->main.scnCode) == 0)
         {
@@ -356,16 +343,38 @@ int transceiver(int shmId)
         else
         {
           int ret = pthread_kill(main, 0);
-          printf("ret value %d\n", ret);
-
           if (ret != 0)
           {
-            printf("Ped_trhead does not exist\n");
-            // printf("this is tranceiver else, current Thread Does not
-            // exist\n");
+            printf("Ped_thread does not exist Create new Thread\n");
+
             pthread_create(&main, &mainattr, ped_control,
                            (void *)&(current->main));
           }
+
+          else{
+
+            if((atoi(current->main.scnCode)-1)/16 != (atoi(prev->main.scnCode)-1)/16){
+
+              try
+              {
+                if (pthread_kill(main, 0) == 0)
+                {
+                  pthread_cancel(main);
+                  printf("Thread cancled in new algorithm\n");
+                }
+              }
+              catch (int exception)
+              {
+                printf("Thread is not exist in new algorithm\n");
+              }
+              printf("New Thread started in new algorithm\n");
+              pthread_create(&main, &mainattr, ped_control, (void *)&(current->main));
+
+            } 
+            // 신호변경시 기존음성 출력 지우고, 새로운 신호로 출력
+
+          }
+
         }
       }
 

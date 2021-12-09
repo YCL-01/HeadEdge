@@ -143,44 +143,44 @@ void pedspeaker_stopper(int spk_index)
 
     switch (spk_index)
     {
-    case 17:
-        speaker_ped1_1->control("index_play", 28);
-        speaker_ped1_2->control("index_play", 28);
-        speaker_movPed_1->control("index_play", 28);
-        speaker_movPed_2->control("index_play", 28);
+    // case 17:
+    //     speaker_ped1_1->control("index_play", 28);
+    //     speaker_ped1_2->control("index_play", 28);
+    //     speaker_movPed_1->control("index_play", 28);
+    //     speaker_movPed_2->control("index_play", 28);
 
-        break;
-    case 23:
-        speaker_ped1_1->control("index_play", 29);
-        speaker_ped1_2->control("index_play", 29);
-        speaker_movPed_1->control("index_play", 29);
-        speaker_movPed_2->control("index_play", 29);
+    //     break;
+    // case 23:
+    //     speaker_ped1_1->control("index_play", 29);
+    //     speaker_ped1_2->control("index_play", 29);
+    //     speaker_movPed_1->control("index_play", 29);
+    //     speaker_movPed_2->control("index_play", 29);
 
-        break;
-    case 25:
-        speaker_ped1_1->control("index_play", 30);
-        speaker_ped1_2->control("index_play", 30);
-        speaker_movPed_1->control("index_play", 30);
-        speaker_movPed_2->control("index_play", 30);
+    //     break;
+    // case 25:
+    //     speaker_ped1_1->control("index_play", 30);
+    //     speaker_ped1_2->control("index_play", 30);
+    //     speaker_movPed_1->control("index_play", 30);
+    //     speaker_movPed_2->control("index_play", 30);
 
-        break;
-    case 26:
-        speaker_ped1_1->control("index_play", 28);
-        speaker_ped1_2->control("index_play", 28);
-        speaker_movPed_1->control("index_play", 28);
-        speaker_movPed_2->control("index_play", 28);
+    //     break;
+    // case 26:
+    //     speaker_ped1_1->control("index_play", 28);
+    //     speaker_ped1_2->control("index_play", 28);
+    //     speaker_movPed_1->control("index_play", 28);
+    //     speaker_movPed_2->control("index_play", 28);
 
-        break;
-    case 27:
-        speaker_ped1_1->control("index_play", 31);
-        speaker_ped1_2->control("index_play", 31);
-        speaker_movPed_1->control("index_play", 31);
-        speaker_movPed_2->control("index_play", 31);
+    //     break;
+    // case 27:
+    //     speaker_ped1_1->control("index_play", 31);
+    //     speaker_ped1_2->control("index_play", 31);
+    //     speaker_movPed_1->control("index_play", 31);
+    //     speaker_movPed_2->control("index_play", 31);
 
-        break;
-    case 28:
+    //     break;
+    // case 28:
 
-        break;
+    //     break;
 
     default:
         // speaker_ped1_1->control("volume", min_volume);
@@ -228,7 +228,8 @@ void *ped_control(void *scn)
 
         printf("ped speaker stop stec :%d ped Thread is alive!\n", ped_spekaer_stop_sec * 2);
 
-        usleep(ped_spekaer_stop_sec * 1500000);
+        // usleep(ped_spekaer_stop_sec * 200000);
+        sleep(ped_spekaer_stop_sec *2 +2);
         pedspeaker_stopper(ped_spk_index);
 
         // speaker_ped1_1->control("volume", max_volume);
