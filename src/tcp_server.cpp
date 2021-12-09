@@ -238,7 +238,6 @@ int transceiver(int shmId)
   while (1)
   {
     current_main = main_scn(shareMemB->pole0, shareMemB->pole1);
-
     sprintf(current->pole0.scnCode, "%s", shareMemB->pole0.scnCode);
     sprintf(current->pole0.riskRate, "%s", shareMemB->pole0.riskRate);
     sprintf(current->pole0.speed, "%s", shareMemB->pole0.speed);
@@ -279,18 +278,11 @@ int transceiver(int shmId)
 
     else
     {
-      // printf("pole1 current scn :%s pole1 prev scn :%s main scn : %s prev
-      // main scn: %s\n",current->pole0.scnCode,prev->pole0.scnCode,
-      // current->main.scnCode, prev->main.scnCode);
-
+      
       if (atoi(current->main.riskRate) > atoi(prev->main.riskRate) && atoi(current->main.riskRate) > 1)
       {
 
         printf("Danger increased\n");
-
-        // pthread_cancel(main);
-        // pthread_cancel(pol0);
-        // pthread_cancel(pol1);
 
         try
         {
@@ -304,17 +296,11 @@ int transceiver(int shmId)
         {
           printf("Thread is not exist\n");
         }
-
-        // if (pthread_kill(pol0,0) == 0) pthread_cancel(pol0);
-        // if (pthread_kill(pol1,0) == 0) pthread_cancel(pol1);
-
         printf("New Thread started\n");
         component_controller((void *)&(current->pole0));
         component_controller((void *)&(current->pole1));
-        // pthread_create(&pol0, NULL, component_controller, (void *)
-        // &(current->pole0)); pthread_create(&pol1, NULL, component_controller,
-        // (void *) &(current->pole1));
         pthread_create(&main, &mainattr, ped_control, (void *)&(current->main));
+      
       }
       // Risk not changed
       else
@@ -332,8 +318,6 @@ int transceiver(int shmId)
           {
             printf("if else  num1 %s\n", current->pole1.pol_num);
             component_controller((void *)&(current->pole1));
-            // pthread_create(&pol1, NULL, component_controller, (void *)
-            // &(current->pole1)); pthread_detach(pol1);
           }
         }
         else
@@ -342,17 +326,10 @@ int transceiver(int shmId)
           {
             printf("if else  num2 %s\n", current->pole1.pol_num);
             component_controller((void *)&(current->pole0));
-            // pthread_create(&pol0, NULL, component_controller, (void *)
-            // &(current->pole0)); pthread_detach(pol0);
           }
           else
           {
             printf("if else num3 %s\n", current->pole1.pol_num);
-            // component_controller((void *) &(current->pole1));
-            // pthread_create(&pol1, NULL, component_controller, (void *)
-            // &(current->pole1)); pthread_detach(pol1); pthread_create(&pol0,
-            // NULL, component_controller, (void *) &(current->pole0));
-            // pthread_detach(pol0);
             component_controller((void *)&(current->pole0));
             component_controller((void *)&(current->pole1));
           }
