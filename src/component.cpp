@@ -114,7 +114,7 @@ void carspeaker_stopper(speaker *speaker)
 {
 
     // printf("this is car speaker stopper ip %s\n", car_speaker_ip);
-    speaker->control("volume", min_volume);
+    speaker->control("stop", 0);
 }
 
 void pedspeaker_stopper(int spk_index)
@@ -324,7 +324,7 @@ void *component_controller(void *scn)
 
         if (car_spk_index >= 0)
         {
-            speaker_car1_1->control("volume", max_volume);
+            speaker_car1_1->control("play", 0);
             speaker_car1_1->control("index_play", car_spk_index);
         }
         else
@@ -338,7 +338,7 @@ void *component_controller(void *scn)
         vms_control(vms_2, vms_index, car_speed);
         if (car_spk_index >= 0)
         {
-            speaker_car1_2->control("volume", max_volume);
+            speaker_car1_2->control("paly", 0);
             speaker_car1_2->control("index_play", car_spk_index);
         }
         else
