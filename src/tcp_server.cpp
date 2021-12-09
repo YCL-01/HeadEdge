@@ -315,7 +315,7 @@ int transceiver(int shmId)
           }
           else
           {
-            printf("if else  num1 %s\n", current->pole1.pol_num);
+            printf("pol1 scn changed %s\n", current->pole1.pol_num);
             component_controller((void *)&(current->pole1));
           }
         }
@@ -323,14 +323,28 @@ int transceiver(int shmId)
         {
           if (strcmp(current->pole1.scnCode, prev->pole1.scnCode) == 0)
           {
-            printf("if else  num2 %s\n", current->pole1.pol_num);
+            printf("pole 0 scn changed %s\n", current->pole0.pol_num);
             component_controller((void *)&(current->pole0));
           }
           else
           {
-            printf("if else num3 %s\n", current->pole1.pol_num);
+            printf("both pol scn changed");
             component_controller((void *)&(current->pole0));
             component_controller((void *)&(current->pole1));
+            try
+            {
+              if (pthread_kill(main, 0) == 0)
+              {
+                pthread_cancel(main);
+                printf("Thread cancled\n");
+              }
+            }
+            catch (int exception)
+            {
+              printf("Thread is not exist\n");
+            }
+            printf("New Thread started\n");
+            pthread_create(&main, &mainattr, ped_control, (void *)&(current->main));
           }
         }
 

@@ -135,7 +135,7 @@ void carspeaker_stopper(speaker *speaker)
 {
 
     // printf("this is car speaker stopper ip %s\n", car_speaker_ip);
-    speaker->control("volume", min_volume);
+    speaker->control("stop", 0);
 }
 
 void pedspeaker_stopper(int spk_index)
@@ -213,14 +213,23 @@ void *ped_control(void *scn)
     {
 
         speaker_ped1_1->control("index_play", ped_spk_index);
-        speaker_ped1_2->control("index_play", ped_spk_index);
         speaker_movPed_1->control("index_play", ped_spk_index);
+
+        speaker_ped1_2->control("index_play", ped_spk_index);
         speaker_movPed_2->control("index_play", ped_spk_index);
 
         speaker_ped1_1->control("play", 0);
-        speaker_ped1_2->control("play", 0);
         speaker_movPed_1->control("play", 0);
+        speaker_ped1_2->control("play", 0);
         speaker_movPed_2->control("play", 0);
+
+
+        int ped_spekaer_stop_sec = speaker_stop_lookuptable[ped_spk_index];
+
+        printf("ped speaker stop stec :%d ped Thread is alive!\n", ped_spekaer_stop_sec * 2);
+
+        usleep(ped_spekaer_stop_sec * 1500000);
+        pedspeaker_stopper(ped_spk_index);
 
         // speaker_ped1_1->control("volume", max_volume);
         // speaker_ped1_2->control("volume", max_volume);
@@ -230,7 +239,6 @@ void *ped_control(void *scn)
 
     else
     {
-
         // speaker_ped1_1->control("volume", min_volume);
         // speaker_ped1_2->control("volume", min_volume);
         // speaker_movPed_1->control("volume", min_volume);
@@ -241,15 +249,7 @@ void *ped_control(void *scn)
         speaker_movPed_1->control("stop", 0);
         speaker_movPed_2->control("stop", 0);
     }
-    if (ped_spk_index >= 0)
-    {
-        int ped_spekaer_stop_sec = speaker_stop_lookuptable[ped_spk_index];
 
-        printf("ped speaker stop stec :%d ped Thread is alive!\n", ped_spekaer_stop_sec * 2);
-
-        usleep(ped_spekaer_stop_sec * 1500000);
-        pedspeaker_stopper(ped_spk_index);
-    }
 }
 
 void vms_control(VMS *vms, int function_num, int car_speed)
@@ -292,14 +292,7 @@ void component_init(void *addr)
     speaker_car1_2->init();
     speaker_movPed_1->init();
     speaker_movPed_2->init();
-    // 스피커 실행 안시키고 싶으면 play를 코멘트하고 stop을 풀면 됌
-
-    // speaker_ped1_1->control("play", 0);
-    // speaker_ped1_2->control("play", 0);
-    // speaker_movPed_1->control("play", 0);
-    // speaker_movPed_2->control("play", 0);
-    // speaker_car1_1->control("play", 0);
-    // speaker_car1_2->control("play", 0);
+    // 스피커 실행 안시키고 싶으면 maxvolume을 코멘트하고 minvolume을 풀면 됌
 
     speaker_ped1_1->control("stop", 0);
     speaker_ped1_2->control("stop", 0);
@@ -345,7 +338,7 @@ void *component_controller(void *scn)
 
         if (car_spk_index >= 0)
         {
-            speaker_car1_1->control("volume", max_volume);
+            speaker_car1_1->control("play", 0);
             speaker_car1_1->control("index_play", car_spk_index);
         }
         else
@@ -359,7 +352,7 @@ void *component_controller(void *scn)
         vms_control(vms_2, vms_index, car_speed);
         if (car_spk_index >= 0)
         {
-            speaker_car1_2->control("volume", max_volume);
+            speaker_car1_2->control("play", 0);
             speaker_car1_2->control("index_play", car_spk_index);
         }
         else
