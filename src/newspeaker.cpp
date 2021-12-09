@@ -466,8 +466,7 @@ void speaker::init()
     // If failed to connect,
     if (connect(SPK_SOCKET, (struct sockaddr *)&sockaddr, sizeof(sockaddr)) < 0)
     {
-        printf("[ERR] Failed to connect a socket!\n" );
-        
+		cerr << "[ERR] Failed to connect a socket!"<< speaker::IP << strerror(errno) << endl;
     }
 
     printf( "[MSG] speaker succesfully connected!\n" );
@@ -482,7 +481,7 @@ void speaker::init()
     bytesReceived = recv(SPK_SOCKET, &buffer[0], buffer.size(), 0); /// Receiving
     printf("bytesReceived : %d\n", bytesReceived);
     //printf("check\n");	
-    printf("this is PING %02x %02x %02x %02x %02x\n",buffer.data()[0],buffer.data()[1], buffer.data()[2], buffer.data()[3], buffer.data()[4]);
+    printf("this is PING from speaker ip %s %02x %02x %02x %02x %02x\n",speaker::IP,buffer.data()[0],buffer.data()[1], buffer.data()[2], buffer.data()[3], buffer.data()[4]);
 }
 
 
@@ -494,8 +493,17 @@ void speaker::control(string option, int value)
     int i = 0;
     // VMS power on
     i = send(SPK_SOCKET, command, 8, 0);
-    
-    // printf("order successfully executed%d\n", i);
+
+	if (i < 0)
+		{
+			cerr << "Error sending socket!"<< speaker::IP << strerror(errno) << endl;
+			printf("Error");
+		}
+}
+
+void speaker::status (string option)
+{
+
 }
 
 

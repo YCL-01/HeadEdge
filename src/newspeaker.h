@@ -28,7 +28,7 @@ public:
 
     virtual void init();
     void control(string option, int value);
-    
+    void status (string option);    
     
     private:
         const char *IP;

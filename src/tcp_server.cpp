@@ -300,7 +300,6 @@ int transceiver(int shmId)
         component_controller((void *)&(current->pole0));
         component_controller((void *)&(current->pole1));
         pthread_create(&main, &mainattr, ped_control, (void *)&(current->main));
-      
       }
       // Risk not changed
       else
