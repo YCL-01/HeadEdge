@@ -162,11 +162,16 @@ void pedspeaker_stopper(int spk_index)
         break;
 
     default:
-        speaker_ped1_1->control("volume", min_volume);
-        speaker_ped1_2->control("volume", min_volume);
-        speaker_movPed_1->control("volume", min_volume);
-        speaker_movPed_2->control("volume", min_volume);
+        // speaker_ped1_1->control("volume", min_volume);
+        // speaker_ped1_2->control("volume", min_volume);
+        // speaker_movPed_1->control("volume", min_volume);
+        // speaker_movPed_2->control("volume", min_volume);
 
+
+        speaker_ped1_1->control("stop", 0);
+        speaker_ped1_2->control("stop", 0);
+        speaker_movPed_1->control("stop", 0);
+        speaker_movPed_2->control("stop", 0);
         break;
     }
     int ret;
