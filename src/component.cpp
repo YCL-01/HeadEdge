@@ -211,6 +211,10 @@ void *ped_control(void *scn)
     printf("ped spk controller %d\n", ped_spk_index);
     if (ped_spk_index >= 0)
     {
+        speaker_ped1_1->control("stop", 0);
+        speaker_ped1_2->control("stop", 0);
+        speaker_movPed_1->control("stop", 0);
+        speaker_movPed_2->control("stop", 0);
 
         speaker_ped1_1->control("index_play", ped_spk_index);
         speaker_movPed_1->control("index_play", ped_spk_index);
@@ -229,7 +233,9 @@ void *ped_control(void *scn)
         printf("ped speaker stop stec :%d ped Thread is alive!\n", ped_spekaer_stop_sec * 2);
 
         // usleep(ped_spekaer_stop_sec * 200000);
-        sleep(ped_spekaer_stop_sec *2 +2);
+        sleep(ped_spekaer_stop_sec *2);
+        // if(ped_spk_index!=25)
+        usleep(1500000);
         pedspeaker_stopper(ped_spk_index);
 
         // speaker_ped1_1->control("volume", max_volume);

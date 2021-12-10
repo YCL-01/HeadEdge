@@ -387,7 +387,7 @@ int transceiver(int shmId)
       sprintf(prev->main.scnCode, "%s", current_main.scnCode);
       sprintf(prev->main.riskRate, "%s", current_main.riskRate);
       sprintf(prev->main.speed, "%s", current_main.speed);
-      usleep(100);
+      usleep(50000);
       // component 계속 실행
       i++;
     }
